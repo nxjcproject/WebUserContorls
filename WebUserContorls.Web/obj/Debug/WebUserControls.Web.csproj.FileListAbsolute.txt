@@ -34,17 +34,3 @@ C:\工作\编程\三层框架V3.1\WebUserControls\WebUserContorls.Web\bin\WebUse
 C:\工作\编程\三层框架V3.1\WebUserControls\WebUserContorls.Web\obj\Debug\WebUserControls.Web.csprojResolveAssemblyReference.cache
 C:\工作\编程\三层框架V3.1\WebUserControls\WebUserContorls.Web\obj\Debug\WebUserContorls.Web.dll
 C:\工作\编程\三层框架V3.1\WebUserControls\WebUserContorls.Web\obj\Debug\WebUserContorls.Web.pdb
-C:\Users\Administrator\Desktop\需要更新到git上的\需要更新到git马亮20161221\WebUserControls\WebUserContorls.Web\bin\WebUserContorls.Web.dll
-C:\Users\Administrator\Desktop\需要更新到git上的\需要更新到git马亮20161221\WebUserControls\WebUserContorls.Web\bin\WebUserContorls.Web.pdb
-C:\Users\Administrator\Desktop\需要更新到git上的\需要更新到git马亮20161221\WebUserControls\WebUserContorls.Web\bin\WebUserControls.Service.dll
-C:\Users\Administrator\Desktop\需要更新到git上的\需要更新到git马亮20161221\WebUserControls\WebUserContorls.Web\bin\SqlServerDataAdapter.dll
-C:\Users\Administrator\Desktop\需要更新到git上的\需要更新到git马亮20161221\WebUserControls\WebUserContorls.Web\bin\WebUserControls.Infrastructure.dll
-C:\Users\Administrator\Desktop\需要更新到git上的\需要更新到git马亮20161221\WebUserControls\WebUserContorls.Web\bin\AutoMapper.dll
-C:\Users\Administrator\Desktop\需要更新到git上的\需要更新到git马亮20161221\WebUserControls\WebUserContorls.Web\bin\WebUserControls.Service.pdb
-C:\Users\Administrator\Desktop\需要更新到git上的\需要更新到git马亮20161221\WebUserControls\WebUserContorls.Web\bin\EasyUIJsonParser.pdb
-C:\Users\Administrator\Desktop\需要更新到git上的\需要更新到git马亮20161221\WebUserControls\WebUserContorls.Web\bin\mDbDataAdaper.pdb
-C:\Users\Administrator\Desktop\需要更新到git上的\需要更新到git马亮20161221\WebUserControls\WebUserContorls.Web\bin\WebStyleBaseForEnergy.pdb
-C:\Users\Administrator\Desktop\需要更新到git上的\需要更新到git马亮20161221\WebUserControls\WebUserContorls.Web\bin\WebUserControls.Infrastructure.pdb
-C:\Users\Administrator\Desktop\需要更新到git上的\需要更新到git马亮20161221\WebUserControls\WebUserContorls.Web\obj\Debug\WebUserControls.Web.csprojResolveAssemblyReference.cache
-C:\Users\Administrator\Desktop\需要更新到git上的\需要更新到git马亮20161221\WebUserControls\WebUserContorls.Web\obj\Debug\WebUserContorls.Web.dll
-C:\Users\Administrator\Desktop\需要更新到git上的\需要更新到git马亮20161221\WebUserControls\WebUserContorls.Web\obj\Debug\WebUserContorls.Web.pdb
