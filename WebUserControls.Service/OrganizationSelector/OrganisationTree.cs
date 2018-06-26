@@ -16,42 +16,54 @@ namespace WebUserControls.Service.OrganizationSelector
         private static readonly ISqlServerDataFactory _dataFactory = new SqlServerDataFactory(_connStr);
         private static readonly BasicDataHelper _dataHelper = new BasicDataHelper(_connStr);
 
-        public static DataTable GetOrganisationTree(List<string> myOrganizationsId, string myType, List<string> myOrganizationTypeItems, int myLeveDepth, bool myEnabled)
+        public static DataTable GetOrganisationTree(List<string> myOrganizationsId, string myType, List<string> myOrganizationTypeItems, int myLeveDepth, string myLeafLevelType, bool myEnabled)
         {
-
-            List<string> m_Organizations = _dataHelper.GetOrganisationLevelCodeById(myOrganizationsId);
             string m_Enabled = myEnabled == true ? "1" : "0";
-            string m_Sql = @"Select 
-                    A.OrganizationID as OrganizationId, 
-                    A.Name as Name,
-                    A.LevelCode as LevelCode, 
-                    A.Type as OrganizationType  
-                    from system_Organization A 
-					where A.Enabled = {1} 
-                    and  (len(A.LevelCode) < {3} or (len(A.LevelCode) = {3} {2} {4}))
-                    and {0}";
-            string m_SqlConditionTemp = @" (A.LevelCode like '{0}%' 
-                                       or CHARINDEX(A.LevelCode, '{0}') > 0) ";
-            string m_SqlType = "";                      //是否指定类型
+
+            string m_Sql = @"SELECT distinct A.OrganizationID as OrganizationId
+                                  ,A.Name as Name
+                                  ,A.LevelCode as LevelCode
+                                  ,A.[Type] as OrganizationType
+                                  ,A.LevelType as LevelType
+                              FROM system_Organization A, system_Organization B, system_Organization C
+                              where B.[Enabled] = {1} 
+                              and (B.LevelCode like C.LevelCode + '%' or CHARINDEX(B.LevelCode, C.LevelCode) > 0) 
+                              {0}
+                              and CHARINDEX(A.LevelCode, B.LevelCode) > 0
+                              order by A.LevelCode";
             string m_SqlCondition = "";                 //数据数据授权
-            string m_SqlTypeItemsCondition = "";
-            if (m_Organizations != null)                //数据授权约束
+            string m_SqlType = "";                      //设置用户选择的类型
+            string m_SqlTypeItemsCondition = "";        //系统设定可以选择的类型    
+            string m_SqlLevelDepth = "";                //系统设定显示的层次深度
+            string m_SqlLeafLevelType = "";             //系统设定叶子节点类型
+            /////////////////////////////数据授权////////////////////////////
+            if (myOrganizationsId != null)                //数据授权约束
             {
-                for (int i = 0; i < m_Organizations.Count; i++)
+                for (int i = 0; i < myOrganizationsId.Count; i++)
                 {
                     if (i == 0)
                     {
-                        m_SqlCondition = string.Format(m_SqlConditionTemp, m_Organizations[i]);
+                        m_SqlCondition = "'" + myOrganizationsId[i] + "'";
                     }
                     else
                     {
-                        m_SqlCondition = m_SqlCondition + string.Format("or " + m_SqlConditionTemp, m_Organizations[i]);
+                        m_SqlCondition = m_SqlCondition + ",'" + myOrganizationsId[i] + "'";
                     }
                 }
             }
-            if (myOrganizationTypeItems != null)                    //设置产线类型
+            if (m_SqlCondition != "")
             {
-                string m_ConditionTemp = " and A.Type in ({0})";
+                m_SqlCondition = " and C.OrganizationID in (" + m_SqlCondition + ")";
+            }
+            else
+            {
+                m_SqlCondition = " and C.OrganizationID <> C.OrganizationID";
+            }
+            /////////////////////////////////////////////////////////////////
+            //////////////////////////设置可以显示的产线类型/////////////////
+            if (myOrganizationTypeItems != null)
+            {
+                string m_ConditionTemp = " and B.Type in ({0})";
                 for (int i = 0; i < myOrganizationTypeItems.Count; i++)
                 {
                     if (i == 0)
@@ -68,19 +80,26 @@ namespace WebUserControls.Service.OrganizationSelector
                     m_SqlTypeItemsCondition = string.Format(m_ConditionTemp, m_SqlTypeItemsCondition);
                 }
             }
+            ///////////////////////////////////////////////////////////////////
+            //////////////////////////设置当前用户选择的产线类型///////////////////
             if (myType != "")
             {
-                m_SqlType = string.Format("and A.Type = '{0}'", myType);
+                m_SqlType = string.Format(" and B.Type = '{0}'", myType);
             }
-
-            if (m_SqlCondition != "")
+            //////////////////////////////////////////////////////////////////////
+            //////////////////////////设置层次深度//////////////////////////
+            if (myLeveDepth > 1)
             {
-                m_Sql = string.Format(m_Sql, "(" + m_SqlCondition + ")", m_Enabled, m_SqlType, myLeveDepth, m_SqlTypeItemsCondition);
-            }
-            else
+                m_SqlLevelDepth = string.Format(" and len(B.LevelCode) <= {0}", myLeveDepth.ToString());
+            }                
+            ////////////////////////////////////////////////////////////////
+            ////////////////////////////叶子节点类型///////////////////////
+            if (myLeafLevelType != "")
             {
-                m_Sql = string.Format(m_Sql, "A.OrganizationID <> A.OrganizationID", m_Enabled, m_SqlType, myLeveDepth, m_SqlTypeItemsCondition);
+                m_SqlLeafLevelType = string.Format(" and B.LevelType = '{0}'", myLeafLevelType);
             }
+            /////////////////////////////////////////////////////////
+            m_Sql = string.Format(m_Sql, m_SqlCondition + m_SqlType + m_SqlTypeItemsCondition + m_SqlLevelDepth + m_SqlLeafLevelType, m_Enabled);
 
             try
             {
@@ -92,42 +111,56 @@ namespace WebUserControls.Service.OrganizationSelector
                 return null;
             }
         }
-        public static DataTable GetProductionLineType(List<string> myOrganizationTypeItmes, string myLeveDepth)
+        public static DataTable GetProductionLineType(List<string> myOrganizationTypeItems, int myLeveDepth, string myLeafLevelType, bool myEnabled)
         {
-            string m_OrganizationTypeItems = "";
-            if (myOrganizationTypeItmes != null)
+            string m_Enabled = myEnabled == true ? "1" : "0";
+            string m_Sql = @"SELECT distinct B.[Type] as ProductionLineId, 
+                                   B.Type as ProductionLineText 
+                              FROM system_Organization B
+                              where B.[Enabled] = {1}
+                              and B.LevelType = 'ProductionLine' 
+                              {0}
+                              order by B.Type";
+
+            string m_SqlTypeItemsCondition = "";        //系统设定可以选择的类型    
+            string m_SqlLevelDepth = "";                //系统设定显示的层次深度
+            string m_SqlLeafLevelType = "";             //系统设定叶子节点类型
+            //////////////////////////设置可以显示的产线类型/////////////////
+            if (myOrganizationTypeItems != null)
             {
-                for (int i = 0; i < myOrganizationTypeItmes.Count; i++)
+                string m_ConditionTemp = " and B.Type in ({0})";
+                for (int i = 0; i < myOrganizationTypeItems.Count; i++)
                 {
                     if (i == 0)
                     {
-                        m_OrganizationTypeItems = "'" + myOrganizationTypeItmes[i] + "'";
+                        m_SqlTypeItemsCondition = m_SqlTypeItemsCondition + "'" + myOrganizationTypeItems[i] + "'";
                     }
                     else
                     {
-                        m_OrganizationTypeItems = m_OrganizationTypeItems + ",'" + myOrganizationTypeItmes[i] + "'";
+                        m_SqlTypeItemsCondition = m_SqlTypeItemsCondition + ",'" + myOrganizationTypeItems[i] + "'";
                     }
                 }
+                if (m_SqlTypeItemsCondition != "")
+                {
+                    m_SqlTypeItemsCondition = string.Format(m_ConditionTemp, m_SqlTypeItemsCondition);
+                }
             }
-            string m_Sql = @"Select 
-                    distinct A.Type as ProductionLineId, 
-                    A.Type as ProductionLineText 
-                    from system_Organization A 
-					where A.Type is not null 
-					and A.Type <> '' 
-                    and A.Type in ('熟料','水泥磨','余热发电')
-                    and len(A.LevelCode) <= {1}
-                    and A.Enabled = 1 
-                    {0}
-                    order by A.Type";
-            string m_OrgnizationTypeCondition = "";
-            if (m_OrganizationTypeItems != "")
+            ///////////////////////////////////////////////////////////////////
+            //////////////////////////设置层次深度//////////////////////////
+            if (myLeveDepth > 1)
             {
-                m_OrgnizationTypeCondition = string.Format(" and A.Type in ({0}) ", m_OrganizationTypeItems);
+                m_SqlLevelDepth = string.Format(" and len(B.LevelCode) <= {0}", myLeveDepth.ToString());
             }
+            ////////////////////////////////////////////////////////////////
+            ////////////////////////////叶子节点类型///////////////////////
+            if (myLeafLevelType != "")
+            {
+                m_SqlLeafLevelType = string.Format(" and B.LevelType = '{0}'", myLeafLevelType);
+            }
+            /////////////////////////////////////////////////////////
             try
             {
-                m_Sql = string.Format(m_Sql, m_OrgnizationTypeCondition, myLeveDepth);
+                m_Sql = string.Format(m_Sql, m_SqlTypeItemsCondition + m_SqlLevelDepth + m_SqlLeafLevelType, m_Enabled);
                 DataTable m_Result = _dataFactory.Query(m_Sql);
                 return m_Result;
             }

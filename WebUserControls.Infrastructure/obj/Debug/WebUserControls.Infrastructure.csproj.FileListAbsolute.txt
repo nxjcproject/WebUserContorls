@@ -11,3 +11,4 @@ C:\工作\编程\三层框架V3.1\WebUserControls\WebUserControls.Infrastructure
 C:\工作\编程\三层框架V3.1\WebUserControls\WebUserControls.Infrastructure\bin\Debug\WebUserControls.Infrastructure.pdb
 C:\工作\编程\三层框架V3.1\WebUserControls\WebUserControls.Infrastructure\obj\Debug\WebUserControls.Infrastructure.dll
 C:\工作\编程\三层框架V3.1\WebUserControls\WebUserControls.Infrastructure\obj\Debug\WebUserControls.Infrastructure.pdb
+C:\工作\编程\恒拓软件\三层框架V3.1\WebUserControls\WebUserControls.Infrastructure\obj\Debug\WebUserControls.Infrastructure.csprojResolveAssemblyReference.cache

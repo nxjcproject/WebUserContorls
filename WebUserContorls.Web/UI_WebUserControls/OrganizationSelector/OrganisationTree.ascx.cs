@@ -14,6 +14,7 @@ namespace WebUserContorls.Web.UI_WebUserControls.OrganizationSelector
         private string _PageName;                            //页面名称
         private List<string> _OrganizationTypeItems;        //可以显示的产线类型
         private int _LeveDepth;                //层次码深度
+        private string _LeafLevelType;             //叶子节点类型
         protected void Page_Load(object sender, EventArgs e)
         {
             HiddenField_PageName.Value = _PageName;
@@ -77,39 +78,46 @@ namespace WebUserContorls.Web.UI_WebUserControls.OrganizationSelector
         {
             get
             {
-                return _LeveDepth;
+                if (_LeveDepth == null || _LeveDepth < 1)
+                {
+                    return -1;
+                }
+                else
+                {
+                    return _LeveDepth;
+                }
             }
             set
             {
                 _LeveDepth = value;
             }
         }
+        public string LeafLevelType
+        {
+            get
+            {
+                if (_LeafLevelType == null)
+                {
+                    return "";
+                }
+                else
+                {
+                    return _LeafLevelType;
+                }
+            }
+            set
+            {
+                _LeafLevelType = value;
+            }
+        }
         private string GetOrganisationTree(string myType)
         {
-            int m_LeveDepth;
-            if (_LeveDepth < 1)
-            {
-                m_LeveDepth = 7;
-            }
-            else
-            {
-                m_LeveDepth = _LeveDepth;
-            }
-            DataTable m_OrganisationInfo = WebUserControls.Service.OrganizationSelector.OrganisationTree.GetOrganisationTree(_Organizations, myType, _OrganizationTypeItems, m_LeveDepth, true);
+            DataTable m_OrganisationInfo = WebUserControls.Service.OrganizationSelector.OrganisationTree.GetOrganisationTree(_Organizations, myType, _OrganizationTypeItems, LeveDepth, LeafLevelType, true);
             return EasyUIJsonParser.TreeJsonParser.DataTableToJsonByLevelCode(m_OrganisationInfo, "LevelCode", "Name", new string[] { "OrganizationId", "OrganizationType" });
         }
         private string GetProductionLineType()
         {
-            int m_LeveDepth;
-            if (_LeveDepth < 1)
-            {
-                m_LeveDepth = 7;
-            }
-            else
-            {
-                m_LeveDepth = _LeveDepth;
-            }
-            DataTable m_OrganisationInfo = WebUserControls.Service.OrganizationSelector.OrganisationTree.GetProductionLineType(_OrganizationTypeItems, m_LeveDepth.ToString());
+            DataTable m_OrganisationInfo = WebUserControls.Service.OrganizationSelector.OrganisationTree.GetProductionLineType(_OrganizationTypeItems, LeveDepth, LeafLevelType, true);
             return EasyUIJsonParser.DataGridJsonParser.DataTableToJson(m_OrganisationInfo);
         }
     }

@@ -91,7 +91,7 @@ namespace WebUserControls.Service.TagsSelector
             string m_SqlCondition = "";
             if (myDcsTagsName != "")
             {
-                m_SqlCondition = string.Format(" and A.VariableDescription like '%{0}%'", myDcsTagsName);
+                m_SqlCondition = string.Format(" and A.VariableName like '%{0}%'", myDcsTagsName);
             }
 
             m_Sql = string.Format(m_Sql, myBatchNumber, myBatchSize, myDataBaseName, m_IsCumulant, myDcsTagsType, m_SqlCondition);                 //"{\"rows\":[{\"ColumnName\":\"WarmingTime\", \"Value\":\"\"}]}"
@@ -117,7 +117,7 @@ namespace WebUserControls.Service.TagsSelector
             string m_SqlCondition = "";
             if (myDcsTagsName != "")
             {
-                m_SqlCondition = string.Format(" and A.VariableDescription like '%{0}%'", myDcsTagsName);
+                m_SqlCondition = string.Format(" and A.VariableName like '%{0}%'", myDcsTagsName);
             }
 
             m_Sql = string.Format(m_Sql, myDataBaseName, m_IsCumulant, myDcsTagsType, m_SqlCondition);                 //"{\"rows\":[{\"ColumnName\":\"WarmingTime\", \"Value\":\"\"}]}"

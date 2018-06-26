@@ -15,7 +15,7 @@ namespace WebUserContorls.Web.UI_TagsSelector
         {
             base.InitComponts();           //调用时必须的初始化
             ////////////////////调试用,自定义的数据授权////////////////////////
-            List<string> m_DataValidIdItems = new List<string>() { "zc_nxjc_byc", "zc_nxjc_qtx_efc", "zc_nxjc_ychc", "zc_nxjc_tsc" };
+            List<string> m_DataValidIdItems = new List<string>() { "zl_lyzlc_lyzlf", "zc_nxjc_qtx_efc", "zc_nxjc_ychc", "zc_nxjc_tsc" };
             AddDataValidIdGroup("ProductionOrganization", m_DataValidIdItems);
             ///////////////////////////////////////////////////////////////////
             this.OrganisationTree1.Organizations = GetDataValidIdGroup("ProductionOrganization");                 //向web用户控件传递数据授权参数
@@ -26,7 +26,8 @@ namespace WebUserContorls.Web.UI_TagsSelector
             
             //this.OrganisationTree1.OrganizationTypeItems.Add("水泥磨");               //设定排除的产线类型
             //this.OrganisationTree1.OrganizationTypeItems.Add("熟料");   
-            //this.OrganisationTree1.LeveDepth = 7;                                         //设定levelcode层次深度（层次码的位数）
+            //this.OrganisationTree1.LeveDepth = 3;                                         //设定levelcode层次深度（层次码的位数）
+            //this.OrganisationTree1.LeafLevelType = "Factory";
         }
 
     }
